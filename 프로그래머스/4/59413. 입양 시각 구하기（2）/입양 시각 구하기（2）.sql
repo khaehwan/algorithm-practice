@@ -1,0 +1,20 @@
+WITH RECURSIVE hourtab as(
+    SELECT 0 as HOUR
+    
+    UNION
+    
+    SELECT HOUR+1
+    FROM hourtab
+    WHERE HOUR<23
+),
+counttab as(
+    SELECT HOUR(DATETIME) as HOUR, COUNT(ANIMAL_ID) as COUNT
+    FROM ANIMAL_OUTS
+    GROUP BY HOUR(DATETIME)
+)
+
+SELECT h.HOUR, COALESCE(c.COUNT, 0) as COUNT
+FROM hourtab as h
+LEFT JOIN counttab as c
+    ON h.HOUR = c.HOUR
+ORDER BY HOUR ASC
