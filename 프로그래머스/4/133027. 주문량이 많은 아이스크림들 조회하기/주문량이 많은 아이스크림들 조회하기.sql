@@ -1,0 +1,19 @@
+WITH fulltab as(
+    SELECT *
+    FROM FIRST_HALF as f
+
+    UNION ALL
+
+    SELECT *
+    FROM JULY as j
+),
+ranktab as(
+    SELECT FLAVOR, SUM(TOTAL_ORDER) as TOTAL_ORDER, ROW_NUMBER() OVER(ORDER BY SUM(TOTAL_ORDER) DESC) as rn
+    FROM fulltab
+    GROUP BY FLAVOR
+)
+
+SELECT FLAVOR
+FROM ranktab
+ORDER BY rn ASC
+LIMIT 3
